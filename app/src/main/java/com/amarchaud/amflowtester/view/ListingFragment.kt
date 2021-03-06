@@ -42,6 +42,10 @@ class ListingFragment : Fragment(), IMovieClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // databinding
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
         with(binding) {
             val layoutManager = LinearLayoutManager(requireContext())
             recyclerViewMovies.layoutManager = layoutManager
@@ -56,9 +60,10 @@ class ListingFragment : Fragment(), IMovieClickListener {
             recyclerViewMovies.adapter = moviesAdapter
         }
 
+        /*
         viewModel.loadingLiveData.observe(viewLifecycleOwner, {
             binding.loading.visibility = if (it) View.VISIBLE else View.GONE
-        })
+        })*/
 
         viewModel.movieListLiveData.observe(viewLifecycleOwner, { result: ResultFlow ->
             when (result.typeResponse) {

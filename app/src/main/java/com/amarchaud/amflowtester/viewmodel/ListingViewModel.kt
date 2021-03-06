@@ -36,13 +36,14 @@ class ListingViewModel @Inject constructor(
 
     private fun fetchMovies() {
         viewModelScope.launch {
-            movieRepository.fetchTrendingMovies().onStart {
-                _loadingLiveData.postValue(true)
-            }.onCompletion {
-                _loadingLiveData.postValue(false)
-            }.collect {
-                _movieListLiveData.value = it
-            }
+            movieRepository.fetchTrendingMovies()
+                .onStart {
+                    _loadingLiveData.postValue(true)
+                }.onCompletion {
+                    _loadingLiveData.postValue(false)
+                }.collect {
+                    _movieListLiveData.value = it
+                }
         }
     }
 }
