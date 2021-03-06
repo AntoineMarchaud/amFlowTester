@@ -67,12 +67,10 @@ class ListingFragment : Fragment(), IMovieClickListener {
                     (result as MovieEntityFlow).movies?.let {
                         moviesAdapter.updateData(it)
                     }
-                    binding.loading.visibility = View.GONE
                 }
 
                 ResultFlow.Companion.TypeResponse.ERROR -> {
                     (result as ErrorFlow).status_message?.let { showError(it) }
-                    binding.loading.visibility = View.GONE
                 }
             }
         })

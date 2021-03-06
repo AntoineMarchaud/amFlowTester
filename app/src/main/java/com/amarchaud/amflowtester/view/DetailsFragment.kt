@@ -57,7 +57,6 @@ class DetailsFragment : Fragment() {
                     (result as DetailApiFlow).details?.let {
                         updateUi(it)
                     }
-                    binding.loading.visibility = View.GONE
                 }
 
                 ResultFlow.Companion.TypeResponse.ERROR -> {

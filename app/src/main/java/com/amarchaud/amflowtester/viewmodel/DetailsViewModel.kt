@@ -28,18 +28,15 @@ class DetailsViewModel @Inject constructor(
     var id = MutableLiveData<Int>()
 
     // when id change...
-    private val _movieLiveData: LiveData<ResultFlow> = id.distinctUntilChanged().let { id ->
+    private val _movieLiveData: LiveData<ResultFlow> = id.distinctUntilChanged().switchMap { id ->
         liveData {
-            id.value?.let {
-
-                movieRepository.fetchMovie(id.value!!).onStart {
-                    _loadingLiveData.postValue(true)
-                }.onCompletion {
-                    _loadingLiveData.postValue(false)
-                }.collect {
-                    emit(it)
-                }
-            } ?: ErrorFlow(500, "id null")
+            movieRepository.fetchMovie(id).onStart {
+                _loadingLiveData.postValue(true)
+            }.onCompletion {
+                _loadingLiveData.postValue(false)
+            }.collect {
+                emit(it)
+            }
         }
     }
 
