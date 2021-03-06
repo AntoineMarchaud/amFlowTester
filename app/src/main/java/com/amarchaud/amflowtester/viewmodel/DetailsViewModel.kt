@@ -3,6 +3,7 @@ package com.amarchaud.amflowtester.viewmodel
 import android.app.Application
 import androidx.lifecycle.*
 import com.amarchaud.amflowtester.model.flow.ResultFlow
+import com.amarchaud.amflowtester.model.flow.sub.ErrorFlow
 import com.amarchaud.amflowtester.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -27,15 +28,18 @@ class DetailsViewModel @Inject constructor(
     var id = MutableLiveData<Int>()
 
     // when id change...
-    private val _movieLiveData: LiveData<ResultFlow> = id.distinctUntilChanged().switchMap { id ->
+    private val _movieLiveData: LiveData<ResultFlow> = id.distinctUntilChanged().let { id ->
         liveData {
-            movieRepository.fetchMovie(id).onStart {
-                _loadingLiveData.postValue(true)
-            }.onCompletion {
-                _loadingLiveData.postValue(false)
-            }.collect {
-                emit(it)
-            }
+            id.value?.let {
+
+                movieRepository.fetchMovie(id.value!!).onStart {
+                    _loadingLiveData.postValue(true)
+                }.onCompletion {
+                    _loadingLiveData.postValue(false)
+                }.collect {
+                    emit(it)
+                }
+            } ?: ErrorFlow(500, "id null")
         }
     }
 
