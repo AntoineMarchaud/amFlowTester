@@ -56,7 +56,11 @@ class ListingFragment : Fragment(), IMovieClickListener {
             recyclerViewMovies.adapter = moviesAdapter
         }
 
-        viewModel.movieList.observe(viewLifecycleOwner, { result: ResultFlow ->
+        viewModel.loadingLiveData.observe(viewLifecycleOwner, {
+            binding.loading.visibility = if (it) View.VISIBLE else View.GONE
+        })
+
+        viewModel.movieListLiveData.observe(viewLifecycleOwner, { result: ResultFlow ->
             when (result.typeResponse) {
 
                 ResultFlow.Companion.TypeResponse.OK -> {
@@ -69,10 +73,6 @@ class ListingFragment : Fragment(), IMovieClickListener {
                 ResultFlow.Companion.TypeResponse.ERROR -> {
                     (result as ErrorFlow).status_message?.let { showError(it) }
                     binding.loading.visibility = View.GONE
-                }
-
-                ResultFlow.Companion.TypeResponse.LOADING -> {
-                    binding.loading.visibility = View.VISIBLE
                 }
             }
         })

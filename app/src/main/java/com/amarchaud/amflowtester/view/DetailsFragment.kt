@@ -45,7 +45,11 @@ class DetailsFragment : Fragment() {
         // give value to ViewModel
         viewModel.id.value = args.id
 
-        viewModel.movie.observe(viewLifecycleOwner, { result: ResultFlow ->
+        viewModel.loadingLiveData.observe(viewLifecycleOwner, {
+            binding.loading.visibility = if (it) View.VISIBLE else View.GONE
+        })
+
+        viewModel.movieLiveData.observe(viewLifecycleOwner, { result: ResultFlow ->
 
             when (result.typeResponse) {
 
@@ -58,11 +62,6 @@ class DetailsFragment : Fragment() {
 
                 ResultFlow.Companion.TypeResponse.ERROR -> {
                     (result as ErrorFlow).status_message?.let { showError(it) }
-                    binding.loading.visibility = View.GONE
-                }
-
-                ResultFlow.Companion.TypeResponse.LOADING -> {
-                    binding.loading.visibility = View.VISIBLE
                 }
             }
         })

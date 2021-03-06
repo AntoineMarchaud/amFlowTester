@@ -6,11 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.amarchaud.amflowtester.model.flow.ResultFlow
-import com.amarchaud.amflowtester.model.network.trending.TrendingResponse
 import com.amarchaud.amflowtester.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,9 +20,15 @@ class ListingViewModel @Inject constructor(
     private val movieRepository: MovieRepository
 ) : AndroidViewModel(app) {
 
-    private val _movieList = MutableLiveData<ResultFlow>()
-    val movieList: LiveData<ResultFlow>
-        get() = _movieList
+
+    private var _loadingLiveData = MutableLiveData<Boolean>()
+    val loadingLiveData: LiveData<Boolean>
+        get() = _loadingLiveData
+
+
+    private val _movieListLiveData = MutableLiveData<ResultFlow>()
+    val movieListLiveData: LiveData<ResultFlow>
+        get() = _movieListLiveData
 
     init {
         fetchMovies()
@@ -29,8 +36,12 @@ class ListingViewModel @Inject constructor(
 
     private fun fetchMovies() {
         viewModelScope.launch {
-            movieRepository.fetchTrendingMovies().collect {
-                _movieList.value = it
+            movieRepository.fetchTrendingMovies().onStart {
+                _loadingLiveData.postValue(true)
+            }.onCompletion {
+                _loadingLiveData.postValue(false)
+            }.collect {
+                _movieListLiveData.value = it
             }
         }
     }

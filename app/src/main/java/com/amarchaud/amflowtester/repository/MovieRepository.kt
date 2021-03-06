@@ -30,9 +30,6 @@ class MovieRepository @Inject constructor(
         // first : database
         emit(MovieEntityFlow(movieDao.getAll()))
 
-        // secondly : loading api
-        emit(ResultFlow(ResultFlow.Companion.TypeResponse.LOADING))
-
         // last : remote movies
         val result = movieApi.getPopularMovies()
         //Cache to database if response is successful
@@ -59,8 +56,6 @@ class MovieRepository @Inject constructor(
      * For details only
      */
     suspend fun fetchMovie(id: Int) = flow {
-
-        emit(ResultFlow(ResultFlow.Companion.TypeResponse.LOADING))
 
         val result = movieApi.getMovie(id)
         if (result.isSuccessful) {

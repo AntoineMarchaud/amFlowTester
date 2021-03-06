@@ -1,4 +1,4 @@
-package com.amarchaud.amflowtester.application
+    package com.amarchaud.amflowtester.application
 
 object Config {
     const val BASE_URL = "https://api.themoviedb.org"

@@ -4,7 +4,7 @@ open class ResultFlow(var typeResponse: TypeResponse) {
 
     companion object {
         enum class TypeResponse {
-            OK, LOADING, ERROR
+            OK, ERROR
         }
     }
 }
