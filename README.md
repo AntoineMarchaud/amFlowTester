@@ -1,7 +1,6 @@
 # amFlowTester
 
-An app to test the modernest pattern MVVM + Hilt + Flow + Repository (Database and/or Webservice) to replace RxJava.
-The app is
+An app to test the modern pattern MVVM + Hilt + Flow + Repository (Database and/or Webservice) to replace RxJava.
 
 - Kotlin / Coroutine / Flow
 - MVVM (ViewBinding/DataBinding/LiveData)
