@@ -51,16 +51,14 @@ class DetailsFragment : Fragment() {
 
         viewModel.movieLiveData.observe(viewLifecycleOwner, { result: ResultFlow ->
 
-            when (result.typeResponse) {
-
-                ResultFlow.Companion.TypeResponse.OK -> {
-                    (result as DetailApiFlow).details?.let {
+            when(result) {
+                is DetailApiFlow ->  {
+                    result.details?.let {
                         updateUi(it)
                     }
                 }
-
-                ResultFlow.Companion.TypeResponse.ERROR -> {
-                    (result as ErrorFlow).status_message?.let { showError(it) }
+                is ErrorFlow -> {
+                    result.status_message?.let { showError(it) }
                 }
             }
         })

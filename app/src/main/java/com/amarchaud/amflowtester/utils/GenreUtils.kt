@@ -32,7 +32,6 @@ class GenreUtils {
             ids?.let {
                 val genreStrs = mutableListOf<String>()
                 ids.forEach {
-                    print("foreach $it")
                     genreStrs.add(getGenre(it))
                 }
                 return genreStrs.joinToString(separator = ", ")
