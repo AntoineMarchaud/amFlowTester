@@ -38,6 +38,8 @@ class DetailsViewModel @Inject constructor(
             }.collect {
                 emit(it)
             }
+
+            // ou a la place du .collect :  .asLiveData(viewModelScope.coroutineContext)
         }
     }
 

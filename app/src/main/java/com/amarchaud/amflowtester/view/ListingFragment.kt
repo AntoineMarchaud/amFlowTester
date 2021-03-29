@@ -28,7 +28,6 @@ class ListingFragment : Fragment(), IMovieClickListener {
 
     private val viewModel: ListingViewModel by viewModels()
 
-    private val movieList = ArrayList<MovieEntity>()
     private lateinit var moviesAdapter: MoviesAdapter
 
     override fun onCreateView(
@@ -56,7 +55,7 @@ class ListingFragment : Fragment(), IMovieClickListener {
             )
 
             recyclerViewMovies.addItemDecoration(dividerItemDecoration)
-            moviesAdapter = MoviesAdapter(movieList, this@ListingFragment)
+            moviesAdapter = MoviesAdapter( this@ListingFragment)
             recyclerViewMovies.adapter = moviesAdapter
         }
 
@@ -65,7 +64,7 @@ class ListingFragment : Fragment(), IMovieClickListener {
 
                 is MovieEntityFlow -> {
                     result.movies?.let {
-                        moviesAdapter.updateData(it)
+                        moviesAdapter.submitList(it)
                     }
                 }
 
