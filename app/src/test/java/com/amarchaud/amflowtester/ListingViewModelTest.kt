@@ -7,29 +7,21 @@ import com.amarchaud.amflowtester.model.database.MovieDao
 import com.amarchaud.amflowtester.model.entity.MovieEntity
 import com.amarchaud.amflowtester.model.flow.ResultFlow
 import com.amarchaud.amflowtester.model.flow.sub.MovieEntityFlow
-import com.amarchaud.amflowtester.model.network.trending.TrendingResponse
 import com.amarchaud.amflowtester.network.MovieApi
 import com.amarchaud.amflowtester.repository.MovieRepository
 import com.amarchaud.amflowtester.viewmodel.ListingViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.runBlockingTest
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.*
 import org.mockito.Mockito.*
-import retrofit2.Response
-import retrofit2.mock.Calls
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody.Companion.toResponseBody
 
-class ListTest {
+class ListingViewModelTest {
 
     @Rule
     @JvmField

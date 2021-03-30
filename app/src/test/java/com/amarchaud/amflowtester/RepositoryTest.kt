@@ -46,12 +46,11 @@ class RepositoryTest {
         MockitoAnnotations.openMocks(this)
     }
 
-    @InternalCoroutinesApi
     @ExperimentalCoroutinesApi
     @Test
     fun testRepoWithApiError() {
         runBlocking {
-            
+
             Mockito.`when`(movieDao.getAll()).thenReturn(
                 listOf(
                     MovieEntity(1, "title", "overview", 0.0, null, null),
@@ -81,12 +80,7 @@ class RepositoryTest {
                         Assert.assertEquals(404, it.status_code)
                     }
                 }
-
             }
-
         }
-
     }
-
-
 }
