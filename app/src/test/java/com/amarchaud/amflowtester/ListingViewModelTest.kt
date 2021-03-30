@@ -38,13 +38,6 @@ class ListingViewModelTest {
     lateinit var applicationMock: Application
 
     @Mock
-    private lateinit var movieDao: MovieDao
-
-    @Mock
-    private lateinit var movieApi: MovieApi
-
-    @Spy
-    @InjectMocks
     private lateinit var movieRepositoryMock: MovieRepository
 
     @Captor
