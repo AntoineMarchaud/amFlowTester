@@ -22,13 +22,10 @@ class MovieRepository @Inject constructor(
     private val movieApi: MovieApi
 ) {
 
-    fun toto() = 1
     /**
      * For all movies
      */
     suspend fun fetchTrendingMovies() = flow {
-
-        println("fetchTrendingMovies      : I'm working in thread ${Thread.currentThread().name}")
 
         // first : database
         emit(MovieEntityFlow(movieDao.getAll()))

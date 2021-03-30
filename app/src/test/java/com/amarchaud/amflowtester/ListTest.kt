@@ -62,7 +62,7 @@ class ListTest {
     @ExperimentalCoroutinesApi
     @Test
     fun testListViewModelFlow() {
-        
+
         runBlocking {
 
             val flow = flow {
