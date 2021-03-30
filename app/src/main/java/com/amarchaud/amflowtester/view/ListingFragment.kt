@@ -41,6 +41,8 @@ class ListingFragment : Fragment(), IMovieClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.fetchMovies()
+
         // databinding
         binding.viewModel = viewModel
         binding.lifecycleOwner = this

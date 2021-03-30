@@ -1,6 +1,7 @@
 package com.amarchaud.amflowtester.viewmodel
 
 import android.app.Application
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,12 +31,9 @@ class ListingViewModel @Inject constructor(
     val movieListLiveData: LiveData<ResultFlow>
         get() = _movieListLiveData
 
-    init {
-        fetchMovies()
-    }
-
-    private fun fetchMovies() {
+    fun fetchMovies() {
         viewModelScope.launch {
+
             movieRepository.fetchTrendingMovies()
                 .onStart {
                     _loadingLiveData.value = true
