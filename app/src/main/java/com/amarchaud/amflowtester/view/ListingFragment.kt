@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.amarchaud.amflowtester.model.flow.sub.MovieEntityFlow
 import com.amarchaud.amflowtester.viewmodel.ListingViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ListingFragment : Fragment(), IMovieClickListener {
@@ -55,13 +57,12 @@ class ListingFragment : Fragment(), IMovieClickListener {
             )
 
             recyclerViewMovies.addItemDecoration(dividerItemDecoration)
-            moviesAdapter = MoviesAdapter( this@ListingFragment)
+            moviesAdapter = MoviesAdapter(this@ListingFragment)
             recyclerViewMovies.adapter = moviesAdapter
+        }
 
-
-            mainSwipeRefresh.setOnRefreshListener {
-                this.viewModel?.fetchMovies()
-            }
+        binding.mainSwipeRefresh.setOnRefreshListener {
+            viewModel.fetchMovies()
         }
 
         viewModel.movieListLiveData.observe(viewLifecycleOwner, { result: ResultFlow ->
@@ -82,8 +83,9 @@ class ListingFragment : Fragment(), IMovieClickListener {
             }
         })
 
-        if(viewModel.movieListLiveData.value == null)
+        if (viewModel.movieListLiveData.value == null) {
             viewModel.fetchMovies()
+        }
     }
 
     override fun onDestroy() {

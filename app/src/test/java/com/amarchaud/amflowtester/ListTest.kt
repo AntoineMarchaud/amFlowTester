@@ -15,6 +15,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runBlockingTest
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -23,7 +26,8 @@ import org.mockito.*
 import org.mockito.Mockito.*
 import retrofit2.Response
 import retrofit2.mock.Calls
-
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 class ListTest {
 
@@ -43,10 +47,12 @@ class ListTest {
 
     @Mock
     private lateinit var movieDao: MovieDao
+
     @Mock
     private lateinit var movieApi: MovieApi
 
-    @Mock
+    @Spy
+    @InjectMocks
     private lateinit var movieRepositoryMock: MovieRepository
 
     @Captor
@@ -63,7 +69,7 @@ class ListTest {
     @Test
     fun testListViewModelFlow() {
 
-        runBlocking {
+        runBlocking{
 
             val flow = flow {
 
@@ -91,12 +97,15 @@ class ListTest {
             val viewModel = ListingViewModel(applicationMock, movieRepositoryMock)
             `when`(movieRepositoryMock.fetchTrendingMovies()).thenReturn(flow)
 
-            // add the observe
+            // add the observer
             viewModel.movieListLiveData.observeForever(mockResultFlowObserver)
+
+            // launch viewModel method
+            // do not use suspend fun
             viewModel.fetchMovies()
 
             // check first flow info
-            verify(mockResultFlowObserver).onChanged(captor.capture())
+            verify(mockResultFlowObserver, times(1)).onChanged(captor.capture())
             assertEquals(true, captor.value is MovieEntityFlow)
             assertEquals(2, (captor.value as MovieEntityFlow).movies?.size)
             assertEquals(1, (captor.value as MovieEntityFlow).movies?.get(0)?.id)

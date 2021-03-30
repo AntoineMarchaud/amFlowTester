@@ -13,6 +13,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
+import okhttp3.internal.wait
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,9 +32,17 @@ class ListingViewModel @Inject constructor(
     val movieListLiveData: LiveData<ResultFlow>
         get() = _movieListLiveData
 
+    suspend fun fetchMoviesSuspend() = movieRepository.fetchTrendingMovies()
+        .onStart {
+            _loadingLiveData.value = true
+        }.onCompletion {
+            _loadingLiveData.value = false
+        }.collect {
+            _movieListLiveData.value = it
+        }
+
     fun fetchMovies() {
         viewModelScope.launch {
-
             movieRepository.fetchTrendingMovies()
                 .onStart {
                     _loadingLiveData.value = true
