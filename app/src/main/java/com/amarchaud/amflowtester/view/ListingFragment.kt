@@ -41,8 +41,6 @@ class ListingFragment : Fragment(), IMovieClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.fetchMovies()
-
         // databinding
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -59,9 +57,17 @@ class ListingFragment : Fragment(), IMovieClickListener {
             recyclerViewMovies.addItemDecoration(dividerItemDecoration)
             moviesAdapter = MoviesAdapter( this@ListingFragment)
             recyclerViewMovies.adapter = moviesAdapter
+
+
+            mainSwipeRefresh.setOnRefreshListener {
+                this.viewModel?.fetchMovies()
+            }
         }
 
         viewModel.movieListLiveData.observe(viewLifecycleOwner, { result: ResultFlow ->
+
+            binding.mainSwipeRefresh.isRefreshing = false
+
             when (result) {
 
                 is MovieEntityFlow -> {
@@ -75,6 +81,9 @@ class ListingFragment : Fragment(), IMovieClickListener {
                 }
             }
         })
+
+        if(viewModel.movieListLiveData.value == null)
+            viewModel.fetchMovies()
     }
 
     override fun onDestroy() {
