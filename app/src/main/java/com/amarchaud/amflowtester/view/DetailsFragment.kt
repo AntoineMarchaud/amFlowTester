@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.amarchaud.amflowtester.R
 import com.amarchaud.amflowtester.application.Config
 import com.amarchaud.amflowtester.databinding.FragmentDetailsBinding
@@ -14,6 +15,7 @@ import com.amarchaud.amflowtester.model.flow.ResultFlow
 import com.amarchaud.amflowtester.model.flow.sub.DetailApiFlow
 import com.amarchaud.amflowtester.model.flow.sub.ErrorFlow
 import com.amarchaud.amflowtester.model.network.detail.DetailResponse
+import com.amarchaud.amflowtester.utils.GlideUtils
 import com.amarchaud.amflowtester.viewmodel.DetailsViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -80,11 +82,8 @@ class DetailsFragment : Fragment() {
         with(binding) {
             tvTitle.text = movie.title
             tvDescription.text = movie.overview
-            Glide.with(requireContext()).load(Config.IMAGE_URL + movie.poster_path)
-                .apply(
-                    RequestOptions().override(400, 400).centerInside()
-                        .placeholder(R.drawable.placehoder)
-                ).into(ivCover)
+
+            GlideUtils.createGlide(requireContext(), Config.IMAGE_URL + movie.poster_path, ivCover)
 
             val genreNames = mutableListOf<String>()
             movie.genres?.forEach {

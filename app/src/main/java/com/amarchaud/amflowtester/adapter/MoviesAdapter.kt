@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.amarchaud.amflowtester.R
 import com.amarchaud.amflowtester.application.Config
 import com.amarchaud.amflowtester.databinding.ItemListingBinding
 import com.amarchaud.amflowtester.interfaces.IMovieClickListener
 import com.amarchaud.amflowtester.model.entity.MovieEntity
 import com.amarchaud.amflowtester.utils.GenreUtils
+import com.amarchaud.amflowtester.utils.GlideUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
@@ -32,18 +34,16 @@ class MoviesAdapter(
 
         fun bind(item: MovieEntity) = with(binding) {
 
+
             itemView.setOnClickListener {
                 onClickListener.onMovieClicked(item)
             }
 
 
             tvTitle.text = item.title
-            Glide.with(itemView.context)
-                .load(Config.IMAGE_URL + item.poster_path)
-                .apply(
-                    RequestOptions().override(400, 400).centerInside()
-                        .placeholder(R.drawable.placehoder)
-                ).into(ivPoster)
+
+            GlideUtils.createGlide(itemView.context, Config.IMAGE_URL + item.poster_path, ivPoster)
+
             tvGenre.text = GenreUtils.getGenre(item.genre_ids)
         }
     }
@@ -53,4 +53,8 @@ class MoviesAdapter(
         val item = getItem(position)
         item?.let { holder.bind(it) }
     }
+}
+
+data class User(val s: String, val i: Int) {
+
 }
