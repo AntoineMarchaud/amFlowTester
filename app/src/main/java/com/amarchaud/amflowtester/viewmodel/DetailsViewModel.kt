@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
+import java.security.PrivateKey
 import javax.inject.Inject
 
 /**
@@ -17,15 +18,16 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     val app: Application,
-    private val movieRepository: MovieRepository
+    private val movieRepository: MovieRepository,
+    savedStateHandle: SavedStateHandle
 ) : AndroidViewModel(app) {
 
     private var _loadingLiveData = MutableLiveData<Boolean>()
     val loadingLiveData: LiveData<Boolean>
         get() = _loadingLiveData
 
-    // given by View
-    var id = MutableLiveData<Int>()
+
+    private var id = MutableLiveData<Int>(savedStateHandle.get("id"))
 
 
     // when id change...

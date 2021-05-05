@@ -44,17 +44,18 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // give value to ViewModel
-        viewModel.id.value = args.id
-
         viewModel.loadingLiveData.observe(viewLifecycleOwner, {
-            binding.loading.visibility = if (it) View.VISIBLE else View.GONE
+            binding.loading.visibility = if (it) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
         })
 
         viewModel.movieLiveData.observe(viewLifecycleOwner, { result: ResultFlow ->
 
-            when(result) {
-                is DetailApiFlow ->  {
+            when (result) {
+                is DetailApiFlow -> {
                     result.details?.let {
                         updateUi(it)
                     }

@@ -16,10 +16,12 @@ import com.amarchaud.amflowtester.interfaces.IMovieClickListener
 import com.amarchaud.amflowtester.model.flow.ResultFlow
 import com.amarchaud.amflowtester.model.entity.MovieEntity
 import com.amarchaud.amflowtester.model.flow.sub.ErrorFlow
+import com.amarchaud.amflowtester.model.flow.sub.InitFlow
 import com.amarchaud.amflowtester.model.flow.sub.MovieEntityFlow
 import com.amarchaud.amflowtester.viewmodel.ListingViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -43,9 +45,6 @@ class ListingFragment : Fragment(), IMovieClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // databinding
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
 
         with(binding) {
             val layoutManager = LinearLayoutManager(requireContext())
@@ -63,6 +62,40 @@ class ListingFragment : Fragment(), IMovieClickListener {
 
         binding.mainSwipeRefresh.setOnRefreshListener {
             viewModel.fetchMovies()
+        }
+
+        viewModel.loadingLiveData.observe(viewLifecycleOwner, {
+            binding.run {
+                if (it) {
+                    loading.visibility = View.VISIBLE
+                    recyclerViewMovies.visibility = View.GONE
+                } else {
+                    loading.visibility = View.GONE
+                    recyclerViewMovies.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.movieListStateFlow.collect { result: ResultFlow ->
+
+                when (result) {
+
+                    is InitFlow -> {
+                        binding.mainSwipeRefresh.isRefreshing = false
+                    }
+
+                    is MovieEntityFlow -> {
+                        result.movies?.let {
+                            moviesAdapter.submitList(it)
+                        }
+                    }
+
+                    is ErrorFlow -> {
+                        result.status_message?.let { showError(it) }
+                    }
+                }
+            }
         }
 
         viewModel.movieListLiveData.observe(viewLifecycleOwner, { result: ResultFlow ->

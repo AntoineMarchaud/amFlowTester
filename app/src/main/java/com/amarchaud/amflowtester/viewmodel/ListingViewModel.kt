@@ -7,12 +7,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.amarchaud.amflowtester.model.flow.ResultFlow
+import com.amarchaud.amflowtester.model.flow.sub.ErrorFlow
+import com.amarchaud.amflowtester.model.flow.sub.InitFlow
 import com.amarchaud.amflowtester.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import okhttp3.internal.wait
 import javax.inject.Inject
 
@@ -32,14 +32,9 @@ class ListingViewModel @Inject constructor(
     val movieListLiveData: LiveData<ResultFlow>
         get() = _movieListLiveData
 
-    suspend fun fetchMoviesSuspend() = movieRepository.fetchTrendingMovies()
-        .onStart {
-            _loadingLiveData.value = true
-        }.onCompletion {
-            _loadingLiveData.value = false
-        }.collect {
-            _movieListLiveData.value = it
-        }
+    private val _movieListStateFlow = MutableStateFlow<ResultFlow>(InitFlow())
+    val movieListStateFlow: StateFlow<ResultFlow>
+        get() = _movieListStateFlow
 
     fun fetchMovies() {
         viewModelScope.launch {
@@ -49,7 +44,8 @@ class ListingViewModel @Inject constructor(
                 }.onCompletion {
                     _loadingLiveData.value = false
                 }.collect {
-                    _movieListLiveData.value = it
+                    //_movieListLiveData.value = it
+                    _movieListStateFlow.value = it
                 }
         }
     }

@@ -25,7 +25,7 @@ class MovieRepository @Inject constructor(
     /**
      * For all movies
      */
-    suspend fun fetchTrendingMovies() = flow {
+    fun fetchTrendingMovies() = flow {
 
         // first : database
         emit(MovieEntityFlow(movieDao.getAll()))
@@ -55,7 +55,7 @@ class MovieRepository @Inject constructor(
     /**
      * For details only
      */
-    suspend fun fetchMovie(id: Int) = flow {
+    fun fetchMovie(id: Int) = flow {
 
         val result = movieApi.getMovie(id)
         if (result.isSuccessful) {
